@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
+import 'azure_create_task.dart';
 import 'src/models/attachments.dart';
 import 'src/models/task_model.dart';
 import 'src/models/tast_create_model.dart';
@@ -35,13 +36,13 @@ class FlutterAzure {
   FlutterAzure._();
   static final instance = FlutterAzure._();
 
+  late ScreenShotConfig _config;
+
+  void initial(ScreenShotConfig config) => _config = config;
+
   /// typeAzure && typeStr
   /// ![typeAzure](https://raw.githubusercontent.com/DoanpPhiHo/azure_create_task/master/assets/Screenshot%202023-03-10%20at%2015.24.52.png)
   Future<Either<String, TaskModel>> createTask({
-    required String userName,
-    required String token,
-    required String organization,
-    required String project,
     TypeAzure typeAzure = TypeAzure.bug,
     String? typeStr,
     required TaskCreateModel task,
@@ -49,10 +50,10 @@ class FlutterAzure {
     final headers = {
       'Content-Type': 'application/json-patch+json',
       'Authorization':
-          'Basic ${base64.encode(utf8.encode('$userName:$token'))}',
+          'Basic ${base64.encode(utf8.encode('${_config.userName}:${_config.token}'))}',
     };
     final urlStr =
-        'https://dev.azure.com/$organization/$project/_apis/wit/workitems/\$${typeStr ?? typeAzure.nameX}?api-version=7.0';
+        'https://dev.azure.com/${_config.organization}/${_config.project}/_apis/wit/workitems/\$${typeStr ?? typeAzure.nameX}?api-version=7.0';
     log('url request create: $urlStr');
     final request = http.Request('POST', Uri.parse(urlStr));
     request.body = json.encode(task.toBody().map((e) => e.toJson()).toList());
@@ -72,22 +73,18 @@ class FlutterAzure {
   }
 
   Future<Either<String, Attachments>> createAttachments({
-    required String userName,
-    required String token,
-    required String organization,
-    required String project,
     required Uint8List fileData,
     required String fileName,
   }) async {
     final headers = {
       'Content-Type': 'application/octet-stream',
       'Authorization':
-          'Basic ${base64.encode(utf8.encode('$userName:$token'))}',
+          'Basic ${base64.encode(utf8.encode('${_config.userName}:${_config.token}'))}',
     };
     final request = http.Request(
         'POST',
         Uri.parse(
-            'https://dev.azure.com/$organization/$project/_apis/wit/attachments?fileName=$fileName.png&uploadType=Simple&api-version=7.0'));
+            'https://dev.azure.com/${_config.organization}/${_config.project}/_apis/wit/attachments?fileName=$fileName.png&uploadType=Simple&api-version=7.0'));
 
     request.bodyBytes = fileData;
 

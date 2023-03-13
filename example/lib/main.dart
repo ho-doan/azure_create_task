@@ -40,15 +40,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    FlutterAzure.instance.initial(
+      ScreenShotConfig(
+        userName: '...',
+        token: '...',
+        organization: '...',
+        project: '...',
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScreenShotScaffold(
       controller: ScreenshotController(),
-      config: ScreenShotConfig(
-        userName: 'userName',
-        token: 'token',
-        organization: 'organization',
-        project: 'project',
-      ),
       appBar: AppBar(
         title: Text(widget.title),
       ),

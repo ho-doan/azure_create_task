@@ -41,7 +41,6 @@ class ScreenShotScaffold extends StatelessWidget {
     this.resizeToAvoidBottomInset,
     this.restorationId,
     required this.controller,
-    required this.config,
     this.body,
   });
   final List<Widget>? persistentFooterButtons;
@@ -67,9 +66,8 @@ class ScreenShotScaffold extends StatelessWidget {
   final Widget? floatingActionButton;
   final FloatingActionButtonAnimator? floatingActionButtonAnimator;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
-  final ScreenshotController controller;
-  final ScreenShotConfig config;
   final Widget? body;
+  final ScreenshotController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +138,6 @@ class ScreenShotScaffold extends StatelessWidget {
         context: context,
         builder: (context) => ReportAzureTaskDialog(
           uint8list: uint8list,
-          config: config,
         ),
       );
     } else {
@@ -157,10 +154,8 @@ class ReportAzureTaskDialog extends StatefulWidget {
   const ReportAzureTaskDialog({
     super.key,
     required this.uint8list,
-    required this.config,
   });
   final Uint8List uint8list;
-  final ScreenShotConfig config;
 
   @override
   State<ReportAzureTaskDialog> createState() => _ReportAzureTaskDialogState();
@@ -340,10 +335,6 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
       setState(() => status = Status.loading);
       final time = DateTime.now().toIso8601String();
       final resultAttachments = await FlutterAzure.instance.createAttachments(
-        userName: widget.config.userName,
-        token: widget.config.token,
-        organization: widget.config.organization,
-        project: widget.config.project,
         fileData: widget.uint8list,
         fileName: 'img_$time.png',
       );
@@ -356,10 +347,6 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
           '<li>${i + 1}. ${reproSteps[i].text}</li>',
       ].join();
       final resultTask = await FlutterAzure.instance.createTask(
-        userName: widget.config.userName,
-        token: widget.config.token,
-        organization: widget.config.organization,
-        project: widget.config.project,
         task: TaskCreateModel(
           title: _titleCtl.text,
           assignedTo: _assignToCtl.text,
