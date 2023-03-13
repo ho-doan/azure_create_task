@@ -4,6 +4,9 @@ part 'task_model.g.dart';
 
 @JsonSerializable()
 class TaskModel {
+  TaskModel({this.id, this.rev, this.fields, this.lLinks, this.url});
+  factory TaskModel.fromJson(Map<String, dynamic> json) =>
+      _$TaskModelFromJson(json);
   @JsonKey(name: 'id')
   final int? id;
   @JsonKey(name: 'rev')
@@ -15,16 +18,30 @@ class TaskModel {
   @JsonKey(name: 'url')
   final String? url;
 
-  TaskModel({this.id, this.rev, this.fields, this.lLinks, this.url});
-
-  factory TaskModel.fromJson(Map<String, dynamic> json) =>
-      _$TaskModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$TaskModelToJson(this);
 }
 
 @JsonSerializable()
 class Fields {
+  Fields({
+    this.systemAreaPath,
+    this.systemTeamProject,
+    this.systemIterationPath,
+    this.systemWorkItemType,
+    this.systemState,
+    this.systemReason,
+    this.systemAssignedTo,
+    this.systemCreatedDate,
+    this.systemCreatedBy,
+    this.systemChangedDate,
+    this.systemChangedBy,
+    this.systemCommentCount,
+    this.systemTitle,
+    this.microsoftVSTSCommonStateChangeDate,
+    this.systemDescription,
+    this.microsoftVSTSTCMReproSteps,
+  });
+  factory Fields.fromJson(Map<String, dynamic> json) => _$FieldsFromJson(json);
   @JsonKey(name: 'System.AreaPath')
   final String? systemAreaPath;
   @JsonKey(name: 'System.TeamProject')
@@ -58,31 +75,22 @@ class Fields {
   @JsonKey(name: 'Microsoft.VSTS.TCM.ReproSteps')
   final String? microsoftVSTSTCMReproSteps;
 
-  Fields({
-    this.systemAreaPath,
-    this.systemTeamProject,
-    this.systemIterationPath,
-    this.systemWorkItemType,
-    this.systemState,
-    this.systemReason,
-    this.systemAssignedTo,
-    this.systemCreatedDate,
-    this.systemCreatedBy,
-    this.systemChangedDate,
-    this.systemChangedBy,
-    this.systemCommentCount,
-    this.systemTitle,
-    this.microsoftVSTSCommonStateChangeDate,
-    this.systemDescription,
-    this.microsoftVSTSTCMReproSteps,
-  });
-  factory Fields.fromJson(Map<String, dynamic> json) => _$FieldsFromJson(json);
-
   Map<String, dynamic> toJson() => _$FieldsToJson(this);
 }
 
 @JsonSerializable()
 class SystemAssignedTo {
+  SystemAssignedTo({
+    this.displayName,
+    this.url,
+    this.lLinks,
+    this.id,
+    this.uniqueName,
+    this.imageUrl,
+    this.descriptor,
+  });
+  factory SystemAssignedTo.fromJson(Map<String, dynamic> json) =>
+      _$SystemAssignedToFromJson(json);
   @JsonKey(name: 'displayName')
   final String? displayName;
   @JsonKey(name: 'url')
@@ -98,52 +106,30 @@ class SystemAssignedTo {
   @JsonKey(name: 'descriptor')
   final String? descriptor;
 
-  SystemAssignedTo({
-    this.displayName,
-    this.url,
-    this.lLinks,
-    this.id,
-    this.uniqueName,
-    this.imageUrl,
-    this.descriptor,
-  });
-  factory SystemAssignedTo.fromJson(Map<String, dynamic> json) =>
-      _$SystemAssignedToFromJson(json);
-
   Map<String, dynamic> toJson() => _$SystemAssignedToToJson(this);
 }
 
 @JsonSerializable()
 class LinksAvatar {
-  final Avatar? avatar;
-
   LinksAvatar({this.avatar});
   factory LinksAvatar.fromJson(Map<String, dynamic> json) =>
       _$LinksAvatarFromJson(json);
+  final Avatar? avatar;
 
   Map<String, dynamic> toJson() => _$LinksAvatarToJson(this);
 }
 
 @JsonSerializable()
 class Avatar {
-  final String? href;
-
   Avatar({this.href});
   factory Avatar.fromJson(Map<String, dynamic> json) => _$AvatarFromJson(json);
+  final String? href;
 
   Map<String, dynamic> toJson() => _$AvatarToJson(this);
 }
 
 @JsonSerializable()
 class Links {
-  final Avatar? self;
-  final Avatar? workItemUpdates;
-  final Avatar? workItemRevisions;
-  final Avatar? workItemComments;
-  final Avatar? html;
-  final Avatar? workItemType;
-  final Avatar? fields;
-
   Links({
     this.self,
     this.workItemUpdates,
@@ -154,6 +140,13 @@ class Links {
     this.fields,
   });
   factory Links.fromJson(Map<String, dynamic> json) => _$LinksFromJson(json);
+  final Avatar? self;
+  final Avatar? workItemUpdates;
+  final Avatar? workItemRevisions;
+  final Avatar? workItemComments;
+  final Avatar? html;
+  final Avatar? workItemType;
+  final Avatar? fields;
 
   Map<String, dynamic> toJson() => _$LinksToJson(this);
 }

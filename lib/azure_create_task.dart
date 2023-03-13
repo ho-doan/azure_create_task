@@ -1,16 +1,20 @@
 library azure_create_task;
 
 import 'dart:convert';
-import 'dart:io';
+import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:azure_create_task/src/models/attachments.dart';
-import 'package:azure_create_task/src/models/task_model.dart';
-import 'package:azure_create_task/src/networks/api_client.dart';
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 
+import 'src/models/attachments.dart';
+import 'src/models/task_model.dart';
 import 'src/models/tast_create_model.dart';
+
+export 'package:screenshot/screenshot.dart';
+
+export 'src/models/config.dart';
+export 'src/widgets/screen_shot_scaff_fold.dart';
 
 enum TypeAzure { bug, task, issue }
 
@@ -28,15 +32,11 @@ extension TypeAzureX on TypeAzure {
 }
 
 class FlutterAzure {
-  FlutterAzure._() {
-    _dio = Dio();
-    _dio.options.connectTimeout = 4;
-    _apiClient = ApiClient(_dio);
-  }
+  FlutterAzure._();
   static final instance = FlutterAzure._();
-  late ApiClient _apiClient;
-  late Dio _dio;
 
+  /// typeAzure && typeStr
+  /// ![typeAzure](https://raw.githubusercontent.com/DoanpPhiHo/azure_create_task/master/assets/Screenshot%202023-03-10%20at%2015.24.52.png)
   Future<Either<String, TaskModel>> createTask({
     required String userName,
     required String token,
@@ -46,18 +46,27 @@ class FlutterAzure {
     String? typeStr,
     required TaskCreateModel task,
   }) async {
-    final result = await _apiClient.createTask(
-      organization,
-      project,
-      typeStr ?? typeAzure.nameX,
-      authToken: 'Basic ${base64.encode(utf8.encode('$userName:$token'))}',
-      json: jsonEncode(task.toBody().map((e) => e.toJson()).toList()),
-    );
-    if (result.response.statusCode == 200) {
-      return Right(result.data);
+    final headers = {
+      'Content-Type': 'application/json-patch+json',
+      'Authorization':
+          'Basic ${base64.encode(utf8.encode('$userName:$token'))}',
+    };
+    final urlStr =
+        'https://dev.azure.com/$organization/$project/_apis/wit/workitems/\$${typeStr ?? typeAzure.nameX}?api-version=7.0';
+    log('url request create: $urlStr');
+    final request = http.Request('POST', Uri.parse(urlStr));
+    request.body = json.encode(task.toBody().map((e) => e.toJson()).toList());
+    request.headers.addAll(headers);
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final data = await response.stream.bytesToString();
+      final Map<String, dynamic> dataMap = json.decode(data);
+      return Right(TaskModel.fromJson(dataMap));
     } else {
       return Left(
-        '${result.response.statusCode}:${result.response.statusMessage}',
+        '${response.statusCode}:${response.reasonPhrase}',
       );
     }
   }
@@ -70,20 +79,28 @@ class FlutterAzure {
     required Uint8List fileData,
     required String fileName,
   }) async {
-    final fileConvert = await File('image').writeAsBytes(fileData);
-    final result = await _apiClient.createAttachments(
-      organization,
-      project,
-      fileName,
-      fileConvert,
-      authToken: 'Basic ${base64.encode(utf8.encode('$userName:$token'))}',
-    );
-    if (result.response.statusCode == 200) {
-      return Right(result.data);
+    final headers = {
+      'Content-Type': 'application/octet-stream',
+      'Authorization':
+          'Basic ${base64.encode(utf8.encode('$userName:$token'))}',
+    };
+    final request = http.Request(
+        'POST',
+        Uri.parse(
+            'https://dev.azure.com/$organization/$project/_apis/wit/attachments?fileName=$fileName.png&uploadType=Simple&api-version=7.0'));
+
+    request.bodyBytes = fileData;
+
+    request.headers.addAll(headers);
+
+    final response = await request.send();
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = await response.stream.bytesToString();
+      final Map<String, dynamic> dataMap = jsonDecode(data);
+      return Right(Attachments.fromJson(dataMap));
     } else {
-      return Left(
-        '${result.response.statusCode}:${result.response.statusMessage}',
-      );
+      return Left('${response.statusCode}: ${response.reasonPhrase}');
     }
   }
 }
