@@ -7,7 +7,7 @@ import '../../azure_create_task.dart';
 import '../models/tast_create_model.dart';
 
 extension NumX on num {
-  Widget get vertical => SizedBox(
+  Widget get verticalFA => SizedBox(
         height: toDouble(),
       );
 }
@@ -185,7 +185,7 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
                 fit: BoxFit.cover,
               ),
             ),
-            8.vertical,
+            8.verticalFA,
             TextFormField(
               controller: _titleCtl,
               decoration: const InputDecoration(
@@ -193,7 +193,7 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
                 label: Text('Title'),
               ),
             ),
-            8.vertical,
+            8.verticalFA,
             TextFormField(
               controller: _assignToCtl,
               decoration: const InputDecoration(
@@ -201,7 +201,7 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
                 label: Text('AssignTo (abc@cde.com)'),
               ),
             ),
-            8.vertical,
+            8.verticalFA,
             TextFormField(
               controller: _descriptionCtl,
               decoration: const InputDecoration(
@@ -275,7 +275,7 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
                   color: Colors.green,
                 ),
               ),
-              6.vertical,
+              6.verticalFA,
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: ElevatedButton.styleFrom(
@@ -297,7 +297,7 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
                   color: Colors.red,
                 ),
               ),
-              6.vertical,
+              6.verticalFA,
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: ElevatedButton.styleFrom(
