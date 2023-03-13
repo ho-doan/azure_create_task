@@ -45,7 +45,7 @@ class _ReportAzureTaskDialogState extends State<ReportAzureTaskDialog> {
                 widget.uint8list,
                 width: 300,
                 height: 200,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
             8.verticalFA,
