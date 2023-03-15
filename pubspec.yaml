@@ -1,7 +1,7 @@
 name: azure_create_task
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+homepage: https://github.com/DoanpPhiHo/azure_create_task
 
 environment:
   sdk: '>=2.19.0 <3.0.0'
